@@ -1,0 +1,25 @@
+{
+  "sourceMaps": "inline",
+  "comments": false,
+  "plugins": [
+    "transform-es2015-destructuring",
+    "transform-class-properties",
+    "transform-export-extensions",
+    "transform-async-to-generator",
+    "transform-object-rest-spread",
+    "transform-es2015-modules-commonjs",
+    "transform-flow-strip-types",
+    "syntax-flow",
+    "syntax-trailing-function-commas"
+  ],
+  "env": {
+    "production": {
+      "compact": true,
+      "sourceMaps": false,
+      "plugins": [
+        "transform-remove-debugger",
+        "transform-remove-console"
+      ]
+    }
+  }
+}
