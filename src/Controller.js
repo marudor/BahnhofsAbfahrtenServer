@@ -41,7 +41,7 @@ router
   const { station } = ctx.params;
   const info = (await axios.get(`https://si.favendo.de/station-info/rest/api/station/${station}`)).data;
   const evaId = info.eva_ids[0];
-  const recursive = info.eva_ids.length > 1;
+  const recursive = info.eva_ids.length > 1 ? 1 : 0;
   // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
   const abfahrten = (await axios.get(`https://marudor.de/api/${evaId}?mode=marudor&backend=iris&version=2&recursive=${recursive}`)).data;
   ctx.body = abfahrten;
