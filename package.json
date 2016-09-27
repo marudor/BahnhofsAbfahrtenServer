@@ -23,7 +23,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-plugin-transform-remove-console": "^6.8.0",
     "babel-plugin-transform-remove-debugger": "^6.8.0",
-    "eslint": "^3.6.0",
+    "eslint": "3.6.1",
     "eslint-config-marudor": "^2.0.11",
     "nodemon": "^1.10.2",
     "source-map-support": "^0.4.2"

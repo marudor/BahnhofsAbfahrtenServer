@@ -4,12 +4,23 @@ import axios from 'axios';
 
 const router = new KoaRouter();
 
+function encodeSearchTerm(term: string) {
+  return term
+  .replace(/ü/g, 'ue')
+  .replace(/Ü/g, 'UE')
+  .replace(/ä/g, 'ae')
+  .replace(/Ä/g, 'AE')
+  .replace(/ö/g, 'oe')
+  .replace(/Ö/g, 'OE')
+  .replace(/ß/g, 'ss');
+}
+
 router
 .prefix('/api')
 // https://si.favendo.de/station-info/rest/api/search?searchTerm=Bochum
 .get('/search/:searchTerm', async ctx => {
   const { searchTerm } = ctx.params;
-  const stations = (await axios.get(`https://si.favendo.de/station-info/rest/api/search?searchTerm=${searchTerm}`)).data;
+  const stations = (await axios.get(`https://si.favendo.de/station-info/rest/api/search?searchTerm=${encodeSearchTerm(searchTerm)}`)).data;
   ctx.body = stations.map(station => ({
     title: station.title,
     id: station.id,
