@@ -34,13 +34,15 @@ router
     id: info.id,
     title: info.title,
     evaId: info.eva_ids[0],
+    ds100: info.shortNames[0],
     recursive: info.eva_ids.length > 1,
   };
 })
 .get('/abfahrten/:station', async ctx => {
   const { station } = ctx.params;
   const info = (await axios.get(`https://si.favendo.de/station-info/rest/api/station/${station}`)).data;
-  const evaId = info.eva_ids[0];
+  // const evaId = info.eva_ids[0];
+  const evaId = info.shortNames[0];
   const recursive = info.eva_ids.length > 1;
   // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
   const abfahrten = (await axios.get(`https://marudor.de/api/${evaId}?mode=marudor&backend=iris&version=2&recursive=${recursive}`)).data;
