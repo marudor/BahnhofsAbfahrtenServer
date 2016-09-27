@@ -43,7 +43,7 @@ router
   const evaId = info.eva_ids[0];
   const recursive = info.eva_ids.length > 1 ? 1 : 0;
   // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
-  const abfahrten = (await axios.get(`https://marudor.de/api/${evaId}?mode=marudor&backend=iris&version=2&recursive=${recursive}`)).data;
+  const abfahrten = (await axios.get(`http://***REMOVED***f.finalrewind.org/${evaId}?mode=marudor&backend=iris&version=2&recursive=${recursive}`)).data;
   ctx.body = abfahrten;
 })
 ;
