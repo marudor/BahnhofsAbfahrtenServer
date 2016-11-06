@@ -17,7 +17,8 @@ function encodeSearchTerm(term: string) {
   .replace(/Ä/g, 'AE')
   .replace(/ö/g, 'oe')
   .replace(/Ö/g, 'OE')
-  .replace(/ß/g, 'ss');
+  .replace(/ß/g, 'ss')
+  .replace(/\$SLASH\$/g, '/');
 }
 
 async function stationInfo(station: number) {
@@ -54,7 +55,7 @@ router
   const { station } = ctx.params;
   const info = await stationInfo(station);
   // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
-  const abfahrten = (await axios.get(`http://***REMOVED***f.finalrewind.org/${info.evaId}?mode=marudor&backend=iris&version=2&recursive=${info.recursive}`)).data;
+  const abfahrten = (await axios.get(`http://***REMOVED***f.finalrewind.org/${info.evaId}?mode=marudor&backend=iris&version=2`)).data;
   ctx.body = abfahrten;
 })
 ;
