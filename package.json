@@ -25,8 +25,8 @@
     "babel-plugin-transform-remove-console": "^6.8.1",
     "babel-plugin-transform-remove-debugger": "^6.8.1",
     "eslint": "^3.19.0",
-    "eslint-config-marudor": "^4.2.2",
-    "flow-bin": "^0.45.0",
+    "eslint-config-marudor": "^4.2.3",
+    "flow-bin": "^0.46.0",
     "nodemon": "^1.10.2",
     "source-map-support": "^0.4.15"
   },
