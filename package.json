@@ -8,8 +8,7 @@
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
     "koa-compress": "^2.0.0",
-    "koa-router": "^7.1.1",
-    "memcache-plus": "^0.2.9"
+    "koa-router": "^7.1.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -34,7 +33,8 @@
     "watch": "babel src --out-dir lib --watch --copy-files",
     "build": "babel src --out-dir lib --copy-files",
     "dev": "BLUEBIRD_WARNINGS=0 BLUEBIRD_LONG_STACK_TRACES=1 nodemon --watch lib --exec 'node lib/index.js'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node lib/index.js"
   },
   "repository": {
     "type": "git",

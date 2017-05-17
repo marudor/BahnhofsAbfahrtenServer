@@ -1,11 +1,6 @@
 // @flow
 import KoaRouter from 'koa-router';
 import axios from 'axios';
-import Memcache from 'memcache-plus';
-
-const memcache = new Memcache({
-  hosts: [process.env.MEMCACHED_SERVER]
-});
 
 const router = new KoaRouter();
 
@@ -22,10 +17,6 @@ function encodeSearchTerm(term: string) {
 }
 
 async function stationInfo(station: number) {
-  const cached = await memcache.get(station);
-  if (cached) {
-    return cached;
-  }
   const info = (await axios.get(
     `https://si.favendo.de/station-info/rest/api/station/${station}`
   )).data;
