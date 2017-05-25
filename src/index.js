@@ -16,3 +16,7 @@ server.listen(process.env.WEB_PORT || 9042);
 if (process.env.NODE_ENV !== 'production') {
   console.log('running in DEV mode!');
 }
+
+if (process.env.NODE_ENV === 'test') {
+  console.log('using TEST data!');
+}

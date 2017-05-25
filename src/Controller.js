@@ -41,6 +41,10 @@ router
   .prefix('/api')
   // https://si.favendo.de/station-info/rest/api/search?searchTerm=Bochum
   .get('/search/:searchTerm', async ctx => {
+    if (process.env.NODE_ENV === 'test') {
+      ctx.body = require('./testData/search');
+      return;
+    }
     const { searchTerm } = ctx.params;
     const stations = (await axios.get(
       `https://si.favendo.de/station-info/rest/api/search?searchTerm=${encodeSearchTerm(searchTerm)}`
@@ -56,6 +60,10 @@ router
     ctx.body = await stationInfo(station);
   })
   .get('/abfahrten/:station', async ctx => {
+    if (process.env.NODE_ENV === 'test') {
+      ctx.body = require('./testData/abfahrten');
+      return;
+    }
     const { station } = ctx.params;
     const info = await stationInfo(station);
     // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
