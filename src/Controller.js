@@ -1,6 +1,7 @@
 // @flow
 import KoaRouter from 'koa-router';
 import axios from 'axios';
+import iconv from 'iconv-lite';
 
 const router = new KoaRouter();
 
@@ -28,6 +29,31 @@ async function stationInfo(station: number) {
   };
 }
 
+// http://reiseauskunft.bahn.de/bin/ajax-getstop.exe/dn?S=Tauberbischofsheim
+async function stationSearchHAFAS(searchTerm: string) {
+  const buffer = (await axios.get(`http://reiseauskunft.bahn.de/bin/ajax-getstop.exe/dn?S=${encodeSearchTerm(searchTerm)}*`, {
+    responseType: 'arraybuffer'
+  })).data;
+  const rawReply = iconv.decode(buffer, 'latin-1')
+  const stringReply = rawReply.substring(8, rawReply.length - 22);
+  const stations = JSON.parse(stringReply).suggestions;
+  return stations.map(station => ({
+    title: station.value,
+    evaId: station.extId,
+  }));
+}
+
+async function stationSearch(searchTerm: string) {
+  const stations = (await axios.get(
+    `https://si.favendo.de/station-info/rest/api/search?searchTerm=${encodeSearchTerm(searchTerm)}`
+  )).data;
+  return stations.map(station => ({
+    title: station.title,
+    id: station.id
+  }));
+}
+
+
 // https://ws.favendo.de/wagon-order/rest/v1/si/1401
 async function wagenReihung(trainNumbers: string[], station: number) {
   const info: Wagenreihung = (await axios.post(
@@ -46,13 +72,15 @@ router
       return;
     }
     const { searchTerm } = ctx.params;
-    const stations = (await axios.get(
-      `https://si.favendo.de/station-info/rest/api/search?searchTerm=${encodeSearchTerm(searchTerm)}`
-    )).data;
-    ctx.body = stations.map(station => ({
-      title: station.title,
-      id: station.id
-    }));
+    ctx.body = await stationSearch(searchTerm);
+  })
+  .get('/searchHAFAS/:searchTerm', async ctx => {
+    if (process.env.NODE_ENV === 'test') {
+      ctx.body = require('./testData/search');
+      return;
+    }
+    const { searchTerm } = ctx.params;
+    ctx.body = await stationSearchHAFAS(searchTerm);
   })
   // https://si.favendo.de/station-info/rest/api/station/724
   .get('/station/:station', async ctx => {

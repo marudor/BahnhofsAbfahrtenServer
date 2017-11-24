@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "axios": "^0.16.2",
-    "koa": "^2.3.0",
+    "axios": "^0.17.1",
+    "iconv-lite": "^0.4.19",
+    "koa": "^2.4.1",
     "koa-bodyparser": "^4.2.0",
     "koa-compress": "^2.0.0",
-    "koa-router": "^7.2.1"
+    "koa-router": "^7.3.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -23,11 +24,11 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-remove-console": "^6.8.5",
     "babel-plugin-transform-remove-debugger": "^6.8.5",
-    "eslint": "^4.7.0",
+    "eslint": "^4.11.0",
     "eslint-config-marudor": "^5.0.0",
-    "flow-bin": "^0.54.1",
+    "flow-bin": "^0.59.0",
     "nodemon": "^1.12.1",
-    "source-map-support": "^0.4.18"
+    "source-map-support": "^0.5.0"
   },
   "scripts": {
     "watch": "babel src --out-dir lib --watch --copy-files",
