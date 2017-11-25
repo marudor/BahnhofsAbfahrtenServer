@@ -39,7 +39,7 @@ async function stationSearchHAFAS(searchTerm: string) {
   const stations = JSON.parse(stringReply).suggestions;
   return stations.map(station => ({
     title: station.value,
-    evaId: station.extId,
+    evaId: Number.parseInt(station.extId, 10).toString()
   }));
 }
 
@@ -61,6 +61,13 @@ async function wagenReihung(trainNumbers: string[], station: number) {
     trainNumbers.map(trainNumber => ({ trainNumber }))
   )).data;
   return info;
+}
+
+// https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
+function evaIdAbfahrten(evaId: string) {
+  return axios.get(
+    `http://***REMOVED***f.finalrewind.org/${evaId}?mode=marudor&backend=iris&version=2`
+  ).then(d => d.data);
 }
 
 router
@@ -93,12 +100,12 @@ router
       return;
     }
     const { station } = ctx.params;
-    const info = await stationInfo(station);
-    // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
-    const abfahrten = (await axios.get(
-      `http://***REMOVED***f.finalrewind.org/${info.evaId}?mode=marudor&backend=iris&version=2`
-    )).data;
-    ctx.body = abfahrten;
+    let evaId = station;
+    if (evaId.length < 6) {
+      const info = await stationInfo(station);
+      evaId = info.evaId;
+    }
+    ctx.body = await evaIdAbfahrten(evaId);
   })
   .get('/wagen/:station/:train', async ctx => {
     const { station, train } = ctx.params;
