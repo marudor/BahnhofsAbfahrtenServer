@@ -1,13 +1,19 @@
-FROM node:8-alpine
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-COPY package.json /usr/src/app/
-COPY yarn.lock /usr/src/app/
+FROM node:8-alpine as build
+WORKDIR /app
+COPY package.json /app/
+COPY yarn.lock /app/
+COPY .flowconfig /app/
+COPY .babelrc /app/
 RUN yarn
-COPY src/ /usr/src/app/src/
-COPY .flowconfig /usr/src/app/
-COPY .babelrc /usr/src/app/
-ENV NODE_ENV=production
+COPY src/ /app/src/
 RUN yarn build
-EXPOSE 9042
+
+FROM node:8-alpine
+RUN mkdir -p /app
+WORKDIR /app
+COPY --from=build /app/lib /app/lib/
+COPY package.json /app
+COPY yarn.lock /app/
+ENV NODE_ENV=production
+RUN yarn --prod
 CMD [ "yarn", "start" ]
