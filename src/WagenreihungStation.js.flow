@@ -1,3 +1,4 @@
+// @flow
 /* Type
   2 - 2. Klasse
   1 - 1. Klasse
@@ -22,17 +23,17 @@ type Waggon = {
   type: '2' | '1' | 's' | 'e',
   symbols: string,
   differentDestination: string,
-  length: number
+  length: number,
 };
 
 type Destination = {
   destinationName: string,
-  destinationVia: string[]
+  destinationVia: string[],
 };
 
 type Subtrain = {
   destination: Destination,
-  sections: string[]
+  sections: string[],
 };
 
 type TrackRecord = {
@@ -43,19 +44,19 @@ type TrackRecord = {
   days: any[],
   subtrains: Subtrain[],
   waggons: Waggon[],
-  traintypes: string
+  traintypes: string,
 };
 
 type SpecificWagenreihung = {
   name: string,
   additionalId: {
     evaNr: string,
-    shortName: string
+    shortName: string,
   },
-  trackRecords: TrackRecord[]
+  trackRecords: TrackRecord[],
 };
 
-type Wagenreihung = {
+export type WagenreihungStation = {
   trainNubmer: string,
   trainType: ?any,
   time: ?any,
@@ -64,5 +65,5 @@ type Wagenreihung = {
   platform: ?any,
   waggon: ?any,
   trainId: ?any,
-  stations: SpecificWagenreihung[]
+  stations: SpecificWagenreihung[],
 };
