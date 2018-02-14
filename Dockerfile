@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json /app/
 COPY yarn.lock /app/
 COPY .flowconfig /app/
-COPY .babelrc /app/
+COPY .babelrc.js /app/
 RUN yarn
 COPY src/ /app/src/
 RUN yarn build
