@@ -18,7 +18,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
       .replace(/ö/g, 'oe')
       .replace(/Ö/g, 'OE')
       .replace(/ß/g, 'ss')
-      .replace(/\$SLASH\$/g, '/');
+      .replace(/%2F/g, '/');
   }
 
   async function stationInfo(station: number) {
