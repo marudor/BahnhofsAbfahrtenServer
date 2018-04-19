@@ -1,4 +1,5 @@
 // @flow
+import auslastung from './Auslastung';
 import axios from 'axios';
 import iconv from 'iconv-lite';
 import KoaRouter from 'koa-router';
@@ -140,6 +141,15 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
 
       try {
         ctx.body = await wagenReihung(trainNumber, date);
+      } catch (e) {
+        ctx.body = e.response.data;
+      }
+    })
+    .get('/auslastung/:trainNumber/:date', async ctx => {
+      const { date, trainNumber } = ctx.params;
+
+      try {
+        ctx.body = await auslastung(trainNumber, date);
       } catch (e) {
         ctx.body = e.response.data;
       }
