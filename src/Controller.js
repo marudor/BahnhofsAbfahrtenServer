@@ -149,7 +149,6 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
   const AuslastungsUser = process.env.AUSLASTUNGS_USER;
   const AuslastungsPW = process.env.AUSLASTUNGS_PW;
 
-  console.log(AuslastungsUser, AuslastungsPW);
   if (AuslastungsUser && AuslastungsPW) {
     const auslastung = createAuslastung(AuslastungsUser, AuslastungsPW);
 
