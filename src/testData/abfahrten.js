@@ -397,7 +397,7 @@ module.exports = {
           name: 'Brake(Unterweser)',
         },
         {
-          name: 'Rodenkirchen(Ol***REMOVED***)',
+          name: 'Rodenkirchen(Oldb)',
         },
         {
           name: 'Kleinensiel',
@@ -451,7 +451,7 @@ module.exports = {
           name: 'Wüsting',
         },
         {
-          name: 'Oldenburg(Ol***REMOVED***)',
+          name: 'Oldenburg(Oldb)',
         },
         {
           name: 'Oldenburg-Wechloy',
@@ -606,7 +606,7 @@ module.exports = {
           name: 'Bad Zwischenahn',
         },
         {
-          name: 'Oldenburg(Ol***REMOVED***)',
+          name: 'Oldenburg(Oldb)',
         },
         {
           name: 'Hude',
@@ -763,7 +763,7 @@ module.exports = {
           name: 'Rechterfeld',
         },
         {
-          name: 'Goldenstedt(Ol***REMOVED***)',
+          name: 'Goldenstedt(Oldb)',
         },
         {
           name: 'Lutten',
@@ -772,19 +772,19 @@ module.exports = {
           name: 'Vechta',
         },
         {
-          name: 'Lohne(Ol***REMOVED***)',
+          name: 'Lohne(Oldb)',
         },
         {
-          name: 'Mühlen(Ol***REMOVED***)',
+          name: 'Mühlen(Oldb)',
         },
         {
-          name: 'Steinfeld(Ol***REMOVED***)',
+          name: 'Steinfeld(Oldb)',
         },
         {
-          name: 'Holdorf(Ol***REMOVED***)',
+          name: 'Holdorf(Oldb)',
         },
         {
-          name: 'Neuenkirchen(Ol***REMOVED***)',
+          name: 'Neuenkirchen(Oldb)',
         },
         {
           name: 'Rieste',
@@ -910,13 +910,13 @@ module.exports = {
           name: 'Sande',
         },
         {
-          name: 'Varel(Ol***REMOVED***)',
+          name: 'Varel(Oldb)',
         },
         {
           name: 'Rastede',
         },
         {
-          name: 'Oldenburg(Ol***REMOVED***)',
+          name: 'Oldenburg(Oldb)',
         },
         {
           name: 'Hude',
@@ -1123,19 +1123,19 @@ module.exports = {
           name: 'Rieste',
         },
         {
-          name: 'Neuenkirchen(Ol***REMOVED***)',
+          name: 'Neuenkirchen(Oldb)',
         },
         {
-          name: 'Holdorf(Ol***REMOVED***)',
+          name: 'Holdorf(Oldb)',
         },
         {
-          name: 'Steinfeld(Ol***REMOVED***)',
+          name: 'Steinfeld(Oldb)',
         },
         {
-          name: 'Mühlen(Ol***REMOVED***)',
+          name: 'Mühlen(Oldb)',
         },
         {
-          name: 'Lohne(Ol***REMOVED***)',
+          name: 'Lohne(Oldb)',
         },
         {
           name: 'Vechta',
@@ -1144,7 +1144,7 @@ module.exports = {
           name: 'Lutten',
         },
         {
-          name: 'Goldenstedt(Ol***REMOVED***)',
+          name: 'Goldenstedt(Oldb)',
         },
         {
           name: 'Rechterfeld',
@@ -1270,7 +1270,7 @@ module.exports = {
           name: 'Oldenburg-Wechloy',
         },
         {
-          name: 'Oldenburg(Ol***REMOVED***)',
+          name: 'Oldenburg(Oldb)',
         },
         {
           name: 'Wüsting',
@@ -1422,7 +1422,7 @@ module.exports = {
           name: 'Kleinensiel',
         },
         {
-          name: 'Rodenkirchen(Ol***REMOVED***)',
+          name: 'Rodenkirchen(Oldb)',
         },
         {
           name: 'Brake(Unterweser)',
@@ -1521,7 +1521,7 @@ module.exports = {
           name: 'Hude',
         },
         {
-          name: 'Oldenburg(Ol***REMOVED***)',
+          name: 'Oldenburg(Oldb)',
         },
         {
           name: 'Bad Zwischenahn',
@@ -1637,7 +1637,7 @@ module.exports = {
           name: 'Hude',
         },
         {
-          name: 'Oldenburg(Ol***REMOVED***)',
+          name: 'Oldenburg(Oldb)',
         },
         {
           name: 'Bad Zwischenahn',

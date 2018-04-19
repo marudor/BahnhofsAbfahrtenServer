@@ -1,6 +1,6 @@
 // @flow
-import auslastung from './Auslastung';
 import axios from 'axios';
+import createAuslastung from './Auslastung';
 import iconv from 'iconv-lite';
 import KoaRouter from 'koa-router';
 import type { Wagenreihung } from 'Wagenreihung';
@@ -79,7 +79,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
 
   // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
   function evaIdAbfahrten(evaId: string) {
-    return axios.get(`http://***REMOVED***f.finalrewind.org/${evaId}?mode=marudor&backend=iris&version=2`).then(d => d.data);
+    return axios.get(`http://dbf.finalrewind.org/${evaId}?mode=marudor&backend=iris&version=2`).then(d => d.data);
   }
 
   router
@@ -144,8 +144,16 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
       } catch (e) {
         ctx.body = e.response.data;
       }
-    })
-    .get('/auslastung/:trainNumber/:date', async ctx => {
+    });
+
+  const AuslastungsUser = process.env.AUSLASTUNGS_USER;
+  const AuslastungsPW = process.env.AUSLASTUNGS_PW;
+
+  console.log(AuslastungsUser, AuslastungsPW);
+  if (AuslastungsUser && AuslastungsPW) {
+    const auslastung = createAuslastung(AuslastungsUser, AuslastungsPW);
+
+    router.get('/auslastung/:trainNumber/:date', async ctx => {
       const { date, trainNumber } = ctx.params;
 
       try {
@@ -154,6 +162,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
         ctx.body = e.response.data;
       }
     });
+  }
 
   koa.use(router.routes());
 }
