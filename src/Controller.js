@@ -77,20 +77,38 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
     return info;
   }
 
-  // https://marudor.de/api/KD?mode=marudor&backend=iris&version=2
+  const numberRegex = /\w+ (\d+)/;
+
+  function getTrainNumber(train: string) {
+    try {
+      return Number.parseInt(numberRegex.exec(train)[1], 10);
+    } catch (e) {
+      return undefined;
+    }
+  }
+  // http://dbf.finalrewind.org/KD?mode=marudor&backend=iris&version=2
   function evaIdAbfahrten(evaId: string) {
-    return axios.get(`http://dbf.finalrewind.org/${evaId}?mode=marudor&backend=iris&version=2`).then(d => d.data);
+    return axios.get(`http://dbf.finalrewind.org/${evaId}?mode=marudor&backend=iris&version=2`).then(d => {
+      const departures = d.data.departures.map(dep => ({
+        ...dep,
+        trainId: getTrainNumber(dep.train),
+      }));
+
+      return {
+        departures,
+      };
+    });
   }
 
   router
     .prefix(prefix)
     // https://si.favendo.de/station-info/rest/api/search?searchTerm=Bochum
     .get('/search/:searchTerm', async ctx => {
-      // if (process.env.NODE_ENV === 'test') {
-      //   ctx.body = require('./testData/search');
-      //
-      //   return;
-      // }
+      if (process.env.NODE_ENV === 'test') {
+        ctx.body = require('./testData/search');
+
+        return;
+      }
       const { searchTerm } = ctx.params;
 
       ctx.body = await stationSearch(searchTerm);
@@ -152,6 +170,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
   if (AuslastungsUser && AuslastungsPW) {
     const auslastung = createAuslastung(AuslastungsUser, AuslastungsPW);
 
+    // YYYYMMDD
     router.get('/auslastung/:trainNumber/:date', async ctx => {
       const { date, trainNumber } = ctx.params;
 
