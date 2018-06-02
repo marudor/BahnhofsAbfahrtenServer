@@ -1,5 +1,5 @@
-// flow-typed signature: 0f207e236ab3c41280338d5791b358c7
-// flow-typed version: 357807b389/luxon_v1.x.x/flow_>=v0.32.0
+// flow-typed signature: d42a84b6338087c59afb224e7d006585
+// flow-typed version: 19c328b04c/luxon_v1.x.x/flow_>=v0.32.0
 
 // @flow
 
@@ -41,10 +41,10 @@ declare module "luxon" {
         localeCode?: ?string
       }
     ): string;
-    isValid: boolean;
-    name: string;
-    type: string;
-    universal: boolean;
+    +isValid: boolean;
+    +name: string;
+    +type: string;
+    +universal: boolean;
     equals(otherZone: Zone): boolean;
     offset(ts: number): number;
   }

@@ -1,11 +1,14 @@
 // @flow
+// import { flatten } from 'lodash';
 import axios from 'axios';
 import createAuslastung from './Auslastung';
 import iconv from 'iconv-lite';
 import KoaRouter from 'koa-router';
-import type { Wagenreihung } from 'Wagenreihung';
+import type { Formation, Wagenreihung } from 'Wagenreihung';
 import type { WagenreihungStation } from 'WagenreihungStation';
 import type Koa from 'koa';
+
+const useTestData = process.env.NODE_ENV === 'test';
 
 export default function setRoutes(koa: Koa, prefix: string = '/api') {
   const router = new KoaRouter();
@@ -57,10 +60,30 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
     }));
   }
 
+  // function isReverseRichtung(formation: Formation) {
+  //   const fahrzeuge = flatten(formation.allFahrzeuggruppe.map(g => g.allFahrzeug));
+  // }
+
+  function differentDestination(formation: Formation) {
+    const groups = formation.allFahrzeuggruppe;
+
+    if (groups.length > 1) {
+      const firstDestination = groups[0].zielbetriebsstellename;
+
+      return groups.some(g => g.zielbetriebsstellename !== firstDestination);
+    }
+
+    return false;
+  }
+
   // https://www.apps-bahn.de/wr/wagenreihung/1.0/6/201802021930
   async function wagenReihung(trainNumber: string, date: string) {
     const info: Wagenreihung = (await axios.get(`https://www.apps-bahn.de/wr/wagenreihung/1.0/${trainNumber}/${date}`))
       .data;
+
+    info.data.istformation.differentDestination = differentDestination(info.data.istformation);
+
+    // info.data.istformation.reverseRichtung = isReverseRichtung(info.data.istformation);
 
     return info;
   }
@@ -78,6 +101,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
   }
 
   const numberRegex = /\w+ (\d+)/;
+  const longDistanceRegex = /(ICE?|TGV|ECE?).*/;
 
   function getTrainNumber(train: string) {
     try {
@@ -92,6 +116,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
       const departures = d.data.departures.map(dep => ({
         ...dep,
         trainId: getTrainNumber(dep.train),
+        longDistance: longDistanceRegex.test(dep.train),
       }));
 
       return {
@@ -104,7 +129,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
     .prefix(prefix)
     // https://si.favendo.de/station-info/rest/api/search?searchTerm=Bochum
     .get('/search/:searchTerm', async ctx => {
-      if (process.env.NODE_ENV === 'test') {
+      if (useTestData) {
         ctx.body = require('./testData/search');
 
         return;
@@ -114,7 +139,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
       ctx.body = await stationSearch(searchTerm);
     })
     .get('/searchHAFAS/:searchTerm', async ctx => {
-      if (process.env.NODE_ENV === 'test') {
+      if (useTestData) {
         ctx.body = require('./testData/search');
 
         return;
@@ -130,7 +155,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
       ctx.body = await stationInfo(station);
     })
     .get('/abfahrten/:station', async ctx => {
-      if (process.env.NODE_ENV === 'test') {
+      if (useTestData) {
         ctx.body = require('./testData/abfahrten');
 
         return;
@@ -155,6 +180,11 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
       }
     })
     .get('/wagen/:trainNumber/:date', async ctx => {
+      if (useTestData) {
+        ctx.body = require('./testData/reihung');
+
+        return;
+      }
       const { date, trainNumber } = ctx.params;
 
       try {
@@ -172,6 +202,11 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
 
     // YYYYMMDD
     router.get('/auslastung/:trainNumber/:date', async ctx => {
+      if (useTestData) {
+        ctx.body = require('./testData/auslastung');
+
+        return;
+      }
       const { date, trainNumber } = ctx.params;
 
       try {
