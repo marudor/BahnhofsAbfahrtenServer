@@ -1,5 +1,5 @@
 // @flow
-// import { flatten } from 'lodash';
+import { flatten } from 'lodash';
 import axios from 'axios';
 import createAuslastung from './Auslastung';
 import iconv from 'iconv-lite';
@@ -64,6 +64,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
   //   const fahrzeuge = flatten(formation.allFahrzeuggruppe.map(g => g.allFahrzeug));
   // }
 
+  // Rausfinden ob alle Teile zum gleichen Ort fahren
   function differentDestination(formation: Formation) {
     const groups = formation.allFahrzeuggruppe;
 
@@ -76,12 +77,71 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
     return false;
   }
 
+  // Reihenfolge wichtig! Wenn nicht eines der oberen DANN sind die unteren "unique"
+  const ICETspecific = ['ABpmz', 'Bpmkz'];
+  const ICE4specific = ['Bpmdz'];
+  const ICE3Velarospecific = ['ARmz'];
+  const ICE3specific = ['Apmzf', 'Bpmbz', 'BRmz'];
+  const ICE2specific = ['Apmz', 'Bpmz'];
+  const ICE1specific = ['Avmz', 'Bvmbz', 'Bvmz'];
+  const IC2specific = ['DBpbzfa', 'DBpza'];
+  // Rausfinden was für ein ICE es genau ist
+
+  function specificTrainType(formation: Formation) {
+    const fahrzeuge = flatten(formation.allFahrzeuggruppe.map(g => g.allFahrzeug));
+    const wagenTypes = fahrzeuge.map(f => f.fahrzeugtyp);
+
+    if (formation.zuggattung === 'IC') {
+      if (wagenTypes.some(t => IC2specific.includes(t))) {
+        return 'IC2';
+      }
+    } else if (formation.zuggattung === 'ICE') {
+      if (wagenTypes.some(t => ICETspecific.includes(t))) {
+        if (fahrzeuge.length / formation.allFahrzeuggruppe.length === 5) {
+          return 'ICET415';
+        }
+
+        return 'ICET411';
+      }
+      if (wagenTypes.some(t => ICE3Velarospecific.includes(t))) {
+        return 'ICE3V';
+      }
+
+      if (wagenTypes.some(t => ICE4specific.includes(t))) {
+        return 'ICE4';
+      }
+
+      const triebboepfe = fahrzeuge.filter(f => f.kategorie === 'LOK' || f.kategorie === 'TRIEBKOPF');
+      const tkPerGroup = triebboepfe.length / formation.allFahrzeuggruppe.length;
+
+      if (tkPerGroup === 1) {
+        return 'ICE2';
+      }
+      if (tkPerGroup === 2) {
+        return 'ICE1';
+      }
+
+      if (wagenTypes.some(t => ICE3specific.includes(t))) {
+        return 'ICE3';
+      }
+      if (wagenTypes.some(t => ICE2specific.includes(t))) {
+        return 'ICE2';
+      }
+      if (wagenTypes.some(t => ICE1specific.includes(t))) {
+        return 'ICE1';
+      }
+    }
+
+    return null;
+  }
+
   // https://www.apps-bahn.de/wr/wagenreihung/1.0/6/201802021930
   async function wagenReihung(trainNumber: string, date: string) {
     const info: Wagenreihung = (await axios.get(`https://www.apps-bahn.de/wr/wagenreihung/1.0/${trainNumber}/${date}`))
       .data;
 
     info.data.istformation.differentDestination = differentDestination(info.data.istformation);
+    info.data.istformation.specificTrainType = specificTrainType(info.data.istformation);
 
     // info.data.istformation.reverseRichtung = isReverseRichtung(info.data.istformation);
 
