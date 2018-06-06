@@ -79,7 +79,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
 
   // Reihenfolge wichtig! Wenn nicht eines der oberen DANN sind die unteren "unique"
   const ICETspecific = ['ABpmz', 'Bpmkz'];
-  const ICE4specific = ['Bpmdz'];
+  const ICE4specific = ['Bpmdz', 'Bpmdzf'];
   const ICE3Velarospecific = ['ARmz'];
   const ICE3specific = ['Apmzf', 'Bpmbz', 'BRmz'];
   const ICE2specific = ['Apmz', 'Bpmz'];
@@ -90,6 +90,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
   function specificTrainType(formation: Formation) {
     const fahrzeuge = flatten(formation.allFahrzeuggruppe.map(g => g.allFahrzeug));
     const wagenTypes = fahrzeuge.map(f => f.fahrzeugtyp);
+    const groupLength = formation.allFahrzeuggruppe.length;
 
     if (formation.zuggattung === 'IC') {
       if (wagenTypes.some(t => IC2specific.includes(t))) {
@@ -97,22 +98,25 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
       }
     } else if (formation.zuggattung === 'ICE') {
       if (wagenTypes.some(t => ICETspecific.includes(t))) {
-        if (fahrzeuge.length / formation.allFahrzeuggruppe.length === 5) {
+        if (fahrzeuge.length / groupLength === 5) {
           return 'ICET415';
         }
 
         return 'ICET411';
       }
+
+      if (groupLength === 1) {
+        if (wagenTypes.some(t => ICE4specific.includes(t))) {
+          return 'ICE4';
+        }
+      }
+
       if (wagenTypes.some(t => ICE3Velarospecific.includes(t))) {
         return 'ICE3V';
       }
 
-      if (wagenTypes.some(t => ICE4specific.includes(t))) {
-        return 'ICE4';
-      }
-
       const triebboepfe = fahrzeuge.filter(f => f.kategorie === 'LOK' || f.kategorie === 'TRIEBKOPF');
-      const tkPerGroup = triebboepfe.length / formation.allFahrzeuggruppe.length;
+      const tkPerGroup = triebboepfe.length / groupLength;
 
       if (tkPerGroup === 1) {
         return 'ICE2';
