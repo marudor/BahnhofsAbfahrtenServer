@@ -45,7 +45,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
 
     return stations.map(station => ({
       title: station.value,
-      evaId: Number.parseInt(station.extId, 10).toString(),
+      id: Number.parseInt(station.extId, 10).toString(),
     }));
   }
 
@@ -165,7 +165,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
   }
 
   const numberRegex = /\w+ (\d+)/;
-  const longDistanceRegex = /(ICE?|TGV|ECE?).*/;
+  const longDistanceRegex = /(ICE?|TGV|ECE?|RJ).*/;
 
   function getTrainNumber(train: string) {
     try {
