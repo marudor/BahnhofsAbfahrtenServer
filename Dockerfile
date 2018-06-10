@@ -1,4 +1,4 @@
-FROM node:8-alpine as build
+FROM node:10-alpine as build
 WORKDIR /app
 COPY package.json /app/
 COPY yarn.lock /app/
@@ -8,7 +8,7 @@ RUN yarn
 COPY src/ /app/src/
 RUN yarn build
 
-FROM node:8-alpine
+FROM node:10-alpine
 RUN mkdir -p /app
 WORKDIR /app
 COPY --from=build /app/lib /app/lib/
