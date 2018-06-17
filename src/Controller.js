@@ -4,7 +4,7 @@ import axios from 'axios';
 import createAuslastung from './Auslastung';
 import iconv from 'iconv-lite';
 import KoaRouter from 'koa-router';
-import type { Formation, Wagenreihung } from 'Wagenreihung';
+import type { Fahrzeug, Formation, Wagenreihung } from 'Wagenreihung';
 import type { WagenreihungStation } from 'WagenreihungStation';
 import type Koa from 'koa';
 
@@ -87,8 +87,7 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
   const IC2specific = ['DBpbzfa', 'DBpza'];
   // Rausfinden was für ein ICE es genau ist
 
-  function specificTrainType(formation: Formation) {
-    const fahrzeuge = flatten(formation.allFahrzeuggruppe.map(g => g.allFahrzeug));
+  function specificTrainType(formation: Formation, fahrzeuge: Fahrzeug[]) {
     const wagenTypes = fahrzeuge.map(f => f.fahrzeugtyp);
     const groupLength = formation.allFahrzeuggruppe.length;
 
@@ -139,15 +138,24 @@ export default function setRoutes(koa: Koa, prefix: string = '/api') {
     return null;
   }
 
+  function fahrtrichtung(fahrzeuge: Fahrzeug[]) {
+    const first = fahrzeuge[0];
+    const last = fahrzeuge[fahrzeuge.length - 1];
+
+    // "Algorithmus" so bei der DB im Code gefunden
+    return last.positionamhalt.startprozent > first.positionamhalt.startprozent;
+  }
+
   // https://www.apps-bahn.de/wr/wagenreihung/1.0/6/201802021930
   async function wagenReihung(trainNumber: string, date: string) {
     const info: Wagenreihung = (await axios.get(`https://www.apps-bahn.de/wr/wagenreihung/1.0/${trainNumber}/${date}`))
       .data;
 
-    info.data.istformation.differentDestination = differentDestination(info.data.istformation);
-    info.data.istformation.specificTrainType = specificTrainType(info.data.istformation);
+    const fahrzeuge = flatten(info.data.istformation.allFahrzeuggruppe.map(g => g.allFahrzeug));
 
-    // info.data.istformation.reverseRichtung = isReverseRichtung(info.data.istformation);
+    info.data.istformation.differentDestination = differentDestination(info.data.istformation);
+    info.data.istformation.specificTrainType = specificTrainType(info.data.istformation, fahrzeuge);
+    info.data.istformation.realFahrtrichtung = fahrtrichtung(fahrzeuge);
 
     return info;
   }
